@@ -83,8 +83,10 @@ class Graph extends PureComponent {
   }
 
   handleInputUpdate(evt) {
-    this.setState({ currentInteractionID: evt.currentTarget.value });
+    this.setState({ currentInteractionID: evt.value });
+   this.search();
   }
+
 
   search() {
     this.viz.renderWithCypher(this.getQueryByInteractionID(this.state.currentInteractionID));
@@ -104,18 +106,19 @@ class Graph extends PureComponent {
       .run(`MATCH (m:Models) WITH DISTINCT m.interaction_id AS ids RETURN ids`)
       .then(result => {
         var lista= result.records.map(x => x.get('ids'))
-        console.log(this)
         this.setState({options: lista})
         session.close()
         return Lista
       })
       .catch(function(error) {
-        console.log(error)
       })
   }
 
   render() {
+
+    console.log(this.state.currentInteractionID)
     return (
+
       <Fragment>
         <Dropdown options={this.state.options} onChange={this.handleInputUpdate} placeholder="Select an Interaction" />
         {this.state.isLoading ? (
