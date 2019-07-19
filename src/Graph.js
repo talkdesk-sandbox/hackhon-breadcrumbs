@@ -18,9 +18,9 @@ class Graph extends PureComponent {
       currentInteractionID: "5d31bc15d2562700045be1f5",
       graphQuery: this.getQueryByInteractionID("5d31bc15d2562700045be1f5"),
       paneOpen: false,
-      options: this.getList()
+      options: null
     }
-
+    this.getList()
     this.search = this.search.bind(this);
     this.handleInputUpdate = this.handleInputUpdate.bind(this);
   }
@@ -102,8 +102,10 @@ class Graph extends PureComponent {
     var session = driver.session()
     return session
       .run(`MATCH (m:Models) WITH DISTINCT m.interaction_id AS ids RETURN ids`)
-      .then(function(result) {
-        var Lista= result.records.map(x => x.get('ids'))
+      .then(result => {
+        var lista= result.records.map(x => x.get('ids'))
+        console.log(this)
+        this.setState({options: lista})
         session.close()
         return Lista
       })
@@ -113,11 +115,9 @@ class Graph extends PureComponent {
   }
 
   render() {
-    var x= this.getList()
-    console.log(x)
     return (
       <Fragment>
-        <Dropdown options={this.state.options} onChange={this._onSelect} placeholder="Select an option" />
+        <Dropdown options={this.state.options} onChange={this.handleInputUpdate} placeholder="Select an Interaction" />
         {this.state.isLoading ? (
           <Confetti
             width={1000}
