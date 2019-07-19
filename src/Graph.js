@@ -84,7 +84,6 @@ class Graph extends PureComponent {
 
   handleInputUpdate(evt) {
     this.setState({ currentInteractionID: evt.value });
-   this.search();
   }
 
 
@@ -120,13 +119,13 @@ class Graph extends PureComponent {
     return (
 
       <Fragment>
-        <Dropdown options={this.state.options} onChange={this.handleInputUpdate} placeholder="Select an Interaction" />
         {this.state.isLoading ? (
           <Confetti
             width={1000}
             height={1000}
           />
         ) : null}
+        <Dropdown options={this.state.options} onChange={this.handleInputUpdate} placeholder="Select an Interaction" />
         <input value={this.state.currentInteractionID} onChange={this.handleInputUpdate} />
         <button onClick={this.search}>Search</button>
         <SlidingPane
