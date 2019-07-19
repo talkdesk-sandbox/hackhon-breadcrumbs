@@ -19,10 +19,14 @@
   "author": "victorfern91",
   "license": "MIT",
   "dependencies": {
+    "neo4j-driver": "^1.7.5",
     "neovis.js": "^1.1.0",
+    "popper.js": "^1.15.0",
     "react": "^16.8.6",
+    "react-bootstrap-dropdown": "^0.3.0",
     "react-confetti": "^3.1.2",
     "react-dom": "^16.8.6",
+    "react-dropdown": "^1.6.4",
     "react-json-view": "^1.19.1",
     "react-sliding-pane": "^3.1.0",
     "react-use": "^10.1.0"
