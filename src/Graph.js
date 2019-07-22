@@ -13,6 +13,7 @@ class Graph extends PureComponent {
   
   constructor() {
     super();
+
     this.state = {
       isLoading: true,
       currentInteractionID: "5d31bc15d2562700045be1f5",
@@ -20,7 +21,14 @@ class Graph extends PureComponent {
       paneOpen: false,
       options: null
     }
-    this.getList()
+
+    this.driver = neo4j.driver(
+      'bolt://54.226.181.219:7687',
+      neo4j.auth.basic('neo4j', 'i-089a33b376c7147cb')
+    );
+
+    this.getList();
+
     this.search = this.search.bind(this);
     this.handleInputUpdate = this.handleInputUpdate.bind(this);
   }
@@ -83,39 +91,28 @@ class Graph extends PureComponent {
   }
 
   handleInputUpdate(evt) {
-    this.setState({ currentInteractionID: evt.value });
+    this.setState({ currentInteractionID: evt.value }, () => this.search());
   }
 
 
   search() {
     this.viz.renderWithCypher(this.getQueryByInteractionID(this.state.currentInteractionID));
-    this.setState({ isLoading: true });
+    this.setState({ isLoading: false });
   }
 
-
-
-  getList() {
-    var Listaaa =[]
-    var driver = neo4j.driver(
-      'bolt://54.226.181.219:7687',
-      neo4j.auth.basic('neo4j', 'i-089a33b376c7147cb')
-    )
-    var session = driver.session()
+  getList() {    
+    const session = this.driver.session();
     return session
       .run(`MATCH (m:Models) WITH DISTINCT m.interaction_id AS ids RETURN ids`)
       .then(result => {
         var lista= result.records.map(x => x.get('ids'))
         this.setState({options: lista})
-        session.close()
-        return Lista
-      })
-      .catch(function(error) {
-      })
+        session.close();
+      });
   }
 
   render() {
-
-    console.log(this.state.currentInteractionID)
+console.log(this.state.currentInteractionID);
     return (
 
       <Fragment>
@@ -125,9 +122,8 @@ class Graph extends PureComponent {
             height={1000}
           />
         ) : null}
-        <Dropdown options={this.state.options} onChange={this.handleInputUpdate} placeholder="Select an Interaction" />
-        <input value={this.state.currentInteractionID} onChange={this.handleInputUpdate} />
-        <button onClick={this.search}>Search</button>
+        <span className="interaction-id">Interaction ID:</span>
+        <Dropdown options={this.state.options} onChange={this.handleInputUpdate} placeholder="Select an Interaction" value={{ label: this.state.currentInteractionID, value:this.state.currentInteractionID}}/>
         <SlidingPane
           isOpen={this.state.paneOpen}
           from='right'
